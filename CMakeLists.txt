@@ -106,11 +106,14 @@ include(SharedCodeDefaults)
 # Just ensure you employ CONFIGURE_DEPENDS so the build system picks up changes
 # If you want to appease the CMake gods and avoid globs, manually add files like so:
 # set(SourceFiles Source/PluginEditor.h Source/PluginProcessor.h Source/PluginEditor.cpp Source/PluginProcessor.cpp)
-file(GLOB_RECURSE SourceFiles CONFIGURE_DEPENDS "${CMAKE_CURRENT_SOURCE_DIR}/source/*.cpp" "${CMAKE_CURRENT_SOURCE_DIR}/source/*.h" 
+file(GLOB_RECURSE SourceFiles CONFIGURE_DEPENDS "${CMAKE_CURRENT_SOURCE_DIR}/source/*.cpp" "${CMAKE_CURRENT_SOURCE_DIR}/source/*.h") 
+        
+file(GLOB_RECURSE VendorFiles CONFIGURE_DEPENDS
         "${CMAKE_CURRENT_SOURCE_DIR}/vendor/Chord-Detector-and-Chromagram/libs/kiss_fft130/*.cpp" "${CMAKE_CURRENT_SOURCE_DIR}/vendor/Chord-Detector-and-Chromagram/libs/kiss_fft130/*.h"
-        "${CMAKE_CURRENT_SOURCE_DIR}/vendor/Chord-Detector-and-Chromagram/src/*.cpp"" ${CMAKE_CURRENT_SOURCE_DIR}/vendor/Chord-Detector-and-Chromagram/src/*.h"
+        "${CMAKE_CURRENT_SOURCE_DIR}/vendor/Chord-Detector-and-Chromagram/src/*.cpp" "${CMAKE_CURRENT_SOURCE_DIR}/vendor/Chord-Detector-and-Chromagram/src/*.h"
 )
-target_sources(SharedCode INTERFACE ${SourceFiles})
+
+target_sources(SharedCode INTERFACE ${SourceFiles} ${VendorFiles})
 
 target_include_directories(SharedCode INTERFACE "${CMAKE_CURRENT_SOURCE_DIR}/vendor/Chord-Detector-and-Chromagram/libs/kiss_fft130")
 target_include_directories(SharedCode INTERFACE "${CMAKE_CURRENT_SOURCE_DIR}/vendor/Chord-Detector-and-Chromagram/src")
