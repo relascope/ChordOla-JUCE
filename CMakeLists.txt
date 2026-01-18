@@ -106,8 +106,15 @@ include(SharedCodeDefaults)
 # Just ensure you employ CONFIGURE_DEPENDS so the build system picks up changes
 # If you want to appease the CMake gods and avoid globs, manually add files like so:
 # set(SourceFiles Source/PluginEditor.h Source/PluginProcessor.h Source/PluginEditor.cpp Source/PluginProcessor.cpp)
-file(GLOB_RECURSE SourceFiles CONFIGURE_DEPENDS "${CMAKE_CURRENT_SOURCE_DIR}/source/*.cpp" "${CMAKE_CURRENT_SOURCE_DIR}/source/*.h")
+file(GLOB_RECURSE SourceFiles CONFIGURE_DEPENDS "${CMAKE_CURRENT_SOURCE_DIR}/source/*.cpp" "${CMAKE_CURRENT_SOURCE_DIR}/source/*.h" 
+        "${CMAKE_CURRENT_SOURCE_DIR}/vendor/Chord-Detector-and-Chromagram/libs/kiss_fft130/*.cpp" "${CMAKE_CURRENT_SOURCE_DIR}/vendor/Chord-Detector-and-Chromagram/libs/kiss_fft130/*.h"
+        "${CMAKE_CURRENT_SOURCE_DIR}/vendor/Chord-Detector-and-Chromagram/src/*.cpp"" ${CMAKE_CURRENT_SOURCE_DIR}/vendor/Chord-Detector-and-Chromagram/src/*.h"
+)
 target_sources(SharedCode INTERFACE ${SourceFiles})
+
+target_include_directories(SharedCode INTERFACE "${CMAKE_CURRENT_SOURCE_DIR}/vendor/Chord-Detector-and-Chromagram/libs/kiss_fft130")
+target_include_directories(SharedCode INTERFACE "${CMAKE_CURRENT_SOURCE_DIR}/vendor/Chord-Detector-and-Chromagram/src")
+
 
 # Adds a BinaryData target for embedding assets into the binary
 include(Assets)
@@ -132,7 +139,9 @@ target_compile_definitions(SharedCode
     VERSION="${CURRENT_VERSION}"
 
     # JucePlugin_Name is for some reason doesn't use the nicer PRODUCT_NAME
-    PRODUCT_NAME_WITHOUT_VERSION="Pamplejuce"
+    PRODUCT_NAME_WITHOUT_VERSION="Pamplejuce" 
+    
+    USE_KISS_FFT=1
 )
 
 # Link to any other modules you added (with juce_add_module) here!

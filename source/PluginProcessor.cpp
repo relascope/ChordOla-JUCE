@@ -1,6 +1,9 @@
 #include "PluginProcessor.h"
 #include "PluginEditor.h"
 
+#include "Chromagram.h"
+
+
 //==============================================================================
 PluginProcessor::PluginProcessor()
      : AudioProcessor (BusesProperties()
