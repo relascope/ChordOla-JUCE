@@ -23,7 +23,7 @@ private:
     std::unique_ptr<melatonin::Inspector> inspector;
     juce::TextButton inspectButton { "Inspect the UI" };
 
-    static constexpr int maxHistorySize = 16;
+    static constexpr int maxHistorySize = 12;
     juce::Array<Chord> chordHistory;
     Chord lastReportedChord { -1, -1, 0 }; // Track change to avoid duplicates
 

@@ -4,7 +4,7 @@ PluginEditor::PluginEditor (PluginProcessor& p)
     : AudioProcessorEditor (&p), processorRef (p)
 {
     juce::ignoreUnused (processorRef);
-
+    
     // addAndMakeVisible (inspectButton);
     //
     // // // this chunk of code instantiates and opens the melatonin inspector
@@ -20,7 +20,7 @@ PluginEditor::PluginEditor (PluginProcessor& p)
 
     // Make sure that before the constructor has finished, you've set the
     // editor's size to whatever you need it to be.
-    setSize (400, 300);
+    setSize (250, 500);
 
     startTimerHz(250);
 }
@@ -43,13 +43,12 @@ void PluginEditor::paint (juce::Graphics& g)
         g.drawText ("Play something to detect chords...", area, juce::Justification::centred, false);
         return;
     }
-
-
     
-    float fontSize = 64.0f;
-    g.setFont (fontSize);
+    g.setFont (64.0f);
     auto chordText = chordHistory[0].toJuceString();
-    g.drawText (chordText, area.removeFromTop (20), juce::Justification::centred, false);
+    g.drawText (chordText, area.removeFromTop (80), juce::Justification::centred, false);
+
+    area.removeFromTop (20); // Add a gap between the first chord and the history
 
     float baseFontSize = 40.0f;
     float minFontSize = 14.0f;
@@ -58,8 +57,8 @@ void PluginEditor::paint (juce::Graphics& g)
     for (int i = 1; i < chordHistory.size(); ++i)
     {
         // Calculate font size: top chord is largest, others grow smaller
-        float fontSize = std::max (minFontSize, baseFontSize - (i * 4.0f));
-        g.setFont (fontSize);
+        float currentFontSize = std::max (minFontSize, baseFontSize - (i * 4.0f));
+        g.setFont (currentFontSize);
 
         // Fade out older chords
         float alpha = juce::jmap ((float) i, 0.0f, (float) maxHistorySize, 1.0f, 0.2f);
