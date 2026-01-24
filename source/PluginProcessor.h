@@ -1,5 +1,8 @@
 #pragma once
 
+#include "Chord.h"
+#include "ChordDetector.h"
+
 #include <juce_audio_processors/juce_audio_processors.h>
 
 #if (MSVC)
@@ -7,6 +10,7 @@
 #endif
 
 #include "Chromagram.h"
+#include "ChordDetector.h"
 
 class PluginProcessor : public juce::AudioProcessor
 {
@@ -40,7 +44,14 @@ public:
     void getStateInformation (juce::MemoryBlock& destData) override;
     void setStateInformation (const void* data, int sizeInBytes) override;
 
+    Chord getDetectedChordName() const;
+
 private:
     Chromagram chromagram {512, 44100}; // just some default values, reset in prepareToPlay anyway
+    juce::AudioBuffer<float> monoBuffer;
+    std::vector<double> audioFrame;
+    
+    ChordDetector chordDetector;
+    std::atomic<Chord> lastChord;
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (PluginProcessor)
 };

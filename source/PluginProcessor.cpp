@@ -2,7 +2,7 @@
 #include "PluginEditor.h"
 
 #include "Chromagram.h"
-
+#include "pluginterfaces/vst/ivstprocesscontext.h"
 
 //==============================================================================
 PluginProcessor::PluginProcessor()
@@ -91,7 +91,12 @@ void PluginProcessor::prepareToPlay (double sampleRate, int samplesPerBlock)
 {
     chromagram.setSamplingFrequency(static_cast<int>(sampleRate));
     chromagram.setInputAudioFrameSize (samplesPerBlock);
+ 
+    monoBuffer.setSize(1, samplesPerBlock, false, false, true);
+    monoBuffer.clear();
     
+    // Convert to double and process with Chromagram
+    audioFrame.assign(static_cast<size_t>(samplesPerBlock), 0.0);
 }
 
 void PluginProcessor::releaseResources()
@@ -140,18 +145,38 @@ void PluginProcessor::processBlock (juce::AudioBuffer<float>& buffer,
     for (auto i = totalNumInputChannels; i < totalNumOutputChannels; ++i)
         buffer.clear (i, 0, buffer.getNumSamples());
 
-    // This is the place where you'd normally do the guts of your plugin's
-    // audio processing...
-    // Make sure to reset the state if your inner loop is processing
-    // the samples and the outer loop is handling the channels.
-    // Alternatively, you can process the samples with the channels
-    // interleaved by keeping the same state.
-    for (int channel = 0; channel < totalNumInputChannels; ++channel)
+    // Sum input channels to mono
+    auto numSamples = buffer.getNumSamples();
+    monoBuffer.clear();
+
+    if (totalNumInputChannels > 0)
     {
-        auto* channelData = buffer.getWritePointer (channel);
-        juce::ignoreUnused (channelData);
-        // ..do something to the data...
+        for (int channel = 0; channel < totalNumInputChannels; ++channel)
+        {
+            monoBuffer.addFrom(0, 0, buffer, channel, 0, numSamples, 1.0f / (float) totalNumInputChannels);
+        }
     }
+    
+    auto* monoReadPtr = monoBuffer.getReadPointer(0);
+    for (int i = 0; i < numSamples; ++i)
+    {
+        audioFrame[static_cast<size_t>(i)] = static_cast<double>(monoReadPtr[i]);
+    }
+
+    chromagram.processAudioFrame(audioFrame);
+
+    if (chromagram.isReady())
+    {
+        auto chroma = chromagram.getChromagram();
+        chordDetector.detectChord(chroma);
+        
+        lastChord.store (Chord { chordDetector.rootNote, chordDetector.quality, chordDetector.intervals });
+    }
+}
+
+Chord PluginProcessor::getDetectedChordName() const
+{
+    return lastChord.load();
 }
 
 //==============================================================================
