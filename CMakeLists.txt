@@ -109,7 +109,9 @@ include(SharedCodeDefaults)
 file(GLOB_RECURSE SourceFiles CONFIGURE_DEPENDS "${CMAKE_CURRENT_SOURCE_DIR}/source/*.cpp" "${CMAKE_CURRENT_SOURCE_DIR}/source/*.h") 
         
 file(GLOB_RECURSE VendorFiles CONFIGURE_DEPENDS
-        "${CMAKE_CURRENT_SOURCE_DIR}/vendor/Chord-Detector-and-Chromagram/libs/kiss_fft130/*.cpp" "${CMAKE_CURRENT_SOURCE_DIR}/vendor/Chord-Detector-and-Chromagram/libs/kiss_fft130/*.h"
+        "${CMAKE_CURRENT_SOURCE_DIR}/vendor/Chord-Detector-and-Chromagram/libs/kiss_fft130/*.c"
+        "${CMAKE_CURRENT_SOURCE_DIR}/vendor/Chord-Detector-and-Chromagram/libs/kiss_fft130/*.hh"
+        "${CMAKE_CURRENT_SOURCE_DIR}/vendor/Chord-Detector-and-Chromagram/libs/kiss_fft130/*.h"
         "${CMAKE_CURRENT_SOURCE_DIR}/vendor/Chord-Detector-and-Chromagram/src/*.cpp" "${CMAKE_CURRENT_SOURCE_DIR}/vendor/Chord-Detector-and-Chromagram/src/*.h"
 )
 
@@ -144,7 +146,7 @@ target_compile_definitions(SharedCode
     # JucePlugin_Name is for some reason doesn't use the nicer PRODUCT_NAME
     PRODUCT_NAME_WITHOUT_VERSION="ChordOla" 
     
-    USE_KISS_FFT=1
+    USE_KISS_FFT
 )
 
 # Link to any other modules you added (with juce_add_module) here!

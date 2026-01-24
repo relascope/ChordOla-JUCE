@@ -6,6 +6,8 @@
 #include "ipps.h"
 #endif
 
+#include "Chromagram.h"
+
 class PluginProcessor : public juce::AudioProcessor
 {
 public:
@@ -39,5 +41,6 @@ public:
     void setStateInformation (const void* data, int sizeInBytes) override;
 
 private:
+    Chromagram chromagram {512, 44100}; // just some default values, reset in prepareToPlay anyway
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (PluginProcessor)
 };
