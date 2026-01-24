@@ -22,5 +22,10 @@ private:
     PluginProcessor& processorRef;
     std::unique_ptr<melatonin::Inspector> inspector;
     juce::TextButton inspectButton { "Inspect the UI" };
+
+    static constexpr int maxHistorySize = 16;
+    juce::Array<Chord> chordHistory;
+    Chord lastReportedChord { -1, -1, 0 }; // Track change to avoid duplicates
+
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (PluginEditor)
 };
